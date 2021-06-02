@@ -34,32 +34,54 @@ public class ChangeExposureDelayTask extends AsyncTask<Void, Void, Integer> {
     public static final int EXPOSURE_DELAY_OFF = 0;
     public static final int EXPOSURE_DELAY_MAX = 10;
 
-    private final Integer[] soundList = {
-            R.raw.ed_off,
-            R.raw.ed_01,
-            R.raw.ed_02,
-            R.raw.ed_03,
-            R.raw.ed_04,
-            R.raw.ed_05,
-            R.raw.ed_06,
-            R.raw.ed_07,
-            R.raw.ed_08,
-            R.raw.ed_09,
-            R.raw.ed_10
+    private int languageIndex;
+    private final Integer[][] soundList = {
+            {
+                    R.raw.ed_off_jp,
+                    R.raw.ed_1_jp,
+                    R.raw.ed_2_jp,
+                    R.raw.ed_3_jp,
+                    R.raw.ed_4_jp,
+                    R.raw.ed_5_jp,
+                    R.raw.ed_6_jp,
+                    R.raw.ed_7_jp,
+                    R.raw.ed_8_jp,
+                    R.raw.ed_9_jp,
+                    R.raw.ed_10_jp
+            },
+            {
+                    R.raw.ed_off_en,
+                    R.raw.ed_1_en,
+                    R.raw.ed_2_en,
+                    R.raw.ed_3_en,
+                    R.raw.ed_4_en,
+                    R.raw.ed_5_en,
+                    R.raw.ed_6_en,
+                    R.raw.ed_7_en,
+                    R.raw.ed_8_en,
+                    R.raw.ed_9_en,
+                    R.raw.ed_10_en
+            }
     };
+
 
     private final Context context;
     private int speechVolume;
     private int setExposureDelay = 0;
 
 
-    public ChangeExposureDelayTask(Context context, int inputDelay, int inSpeechVolume) {
+    public ChangeExposureDelayTask(Context context, int inputDelay, int inSpeechVolume, int inLangIndex) {
         this.context = context;
         speechVolume = inSpeechVolume;
         if ( EXPOSURE_DELAY_OFF<=inputDelay && inputDelay<=EXPOSURE_DELAY_MAX ) {
             setExposureDelay = inputDelay ;
         } else {
             setExposureDelay = EXPOSURE_DELAY_TGGLE;
+        }
+        if ( SoundManagerTask.LANGUAGE_JP <= inLangIndex && inLangIndex <= SoundManagerTask.LANGUAGE_EN) {
+            languageIndex = inLangIndex;
+        } else {
+            languageIndex = SoundManagerTask.LANGUAGE_EN;
         }
     }
 
@@ -119,7 +141,7 @@ public class ChangeExposureDelayTask extends AsyncTask<Void, Void, Integer> {
         //resultにあった音声を再生
         Integer soundNo = result;
         if ( (EXPOSURE_DELAY_OFF <= soundNo) && (soundNo <= EXPOSURE_DELAY_MAX) ) {
-            new SoundManagerTask(context, soundList[soundNo], speechVolume).execute();
+            new SoundManagerTask(context, soundList[languageIndex][soundNo], speechVolume).execute();
         } else {
             //実行不可は無処理
         }

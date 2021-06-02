@@ -74,6 +74,17 @@ public class MainActivity extends PluginActivity {
     private int speechVolume = SPEECH_VOLUME_MIN;
     private int defaultSpeechVolume = SPEECH_VOLUME_MAX;
 
+    //発話言語保持用
+    private int languageIndex = SoundManagerTask.LANGUAGE_EN;
+    private final Integer[] soundListChgLang = {
+            R.raw.speak_in_jp,
+            R.raw.speak_in_en
+    };
+    private final Integer[] soundListChgVolume = {
+            R.raw.speech_volume_jp,
+            R.raw.speech_volume_en
+    };
+
 
     private CheckApListTask.Callback mCheckApListCallback = new CheckApListTask.Callback() {
         @Override
@@ -94,7 +105,8 @@ public class MainActivity extends PluginActivity {
 
         //set OLED Display mode for THETA Z1
         Intent oledIntentSet = new Intent(ACTION_OLED_DISPLAY_SET);
-        oledIntentSet.putExtra("display", "basic");
+        //oledIntentSet.putExtra("display", "basic");
+        oledIntentSet.putExtra("display", "plug-in");
         sendBroadcast(oledIntentSet);
 
         // Set enable to close by pluginlibrary, If you set false, please call close() after finishing your end processing.
@@ -300,6 +312,7 @@ public class MainActivity extends PluginActivity {
             "SET_CAMERA_VOL_MINUS",
             "SET_SPEECH_VOL_PLUS",
             "SET_SPEECH_VOL_MINUS",
+            "TGGLE_LANGUAGE",
     };
     public static final int WITH_INPUT = -1;  //use key operation history
     public static final int NO_PROCESS = 0;
@@ -329,7 +342,8 @@ public class MainActivity extends PluginActivity {
     public static final int SET_CAMERA_VOL_MINUS = 24;
     public static final int SET_SPEECH_VOL_PLUS = 25;
     public static final int SET_SPEECH_VOL_MINUS = 26;
-    public static final int PROCESS_CODE_MAX_NUM = 27;//Last Code + 1
+    public static final int TGGLE_LANGUAGE = 27;
+    public static final int PROCESS_CODE_MAX_NUM = 28;//Last Code + 1
     public static final int PROCESS_CODE_SIMPLE_NUM = SET_EXP_DELAY_OFF + 1;
 
     private void execKeyProcess(int processCode) {
@@ -345,7 +359,7 @@ public class MainActivity extends PluginActivity {
                 new ChangeCaptureModeTask(ChangeCaptureModeTask.CAPMODE_TGGLE).execute();
                 break;
             case TGGLE_EXP_DELAY:
-                new ChangeExposureDelayTask(getApplicationContext(), ChangeExposureDelayTask.EXPOSURE_DELAY_TGGLE, speechVolume).execute();
+                new ChangeExposureDelayTask(getApplicationContext(), ChangeExposureDelayTask.EXPOSURE_DELAY_TGGLE, speechVolume, languageIndex).execute();
                 break;
             case TGGLE_CAMERA_VOL:
                 new ChangeVolumeTask(getApplicationContext(), ChangeVolumeTask.VOLUME_TGGLE).execute();
@@ -354,16 +368,16 @@ public class MainActivity extends PluginActivity {
                 changeSpeechVolume();
                 break;
             case SET_EV_ZERO:
-                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_ZERO, speechVolume).execute();
+                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_ZERO, speechVolume, languageIndex).execute();
                 break;
             case SET_EV_PLUS:
-                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_PLUS, speechVolume).execute();
+                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_PLUS, speechVolume, languageIndex).execute();
                 break;
             case SET_EV_MINUS:
-                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_MINUS, speechVolume).execute();
+                new ChangeEvTask(getApplicationContext(), ChangeEvTask.EV_MINUS, speechVolume, languageIndex).execute();
                 break;
             case SET_EXP_DELAY_OFF:
-                new ChangeExposureDelayTask(getApplicationContext(), ChangeExposureDelayTask.EXPOSURE_DELAY_OFF, speechVolume).execute();
+                new ChangeExposureDelayTask(getApplicationContext(), ChangeExposureDelayTask.EXPOSURE_DELAY_OFF, speechVolume, languageIndex).execute();
                 break;
             case SET_EXP_DELAY_1:
             case SET_EXP_DELAY_2:
@@ -375,7 +389,7 @@ public class MainActivity extends PluginActivity {
             case SET_EXP_DELAY_8:
             case SET_EXP_DELAY_9:
             case SET_EXP_DELAY_10:
-                new ChangeExposureDelayTask(getApplicationContext(), (processCode - SET_EXP_DELAY_OFF), speechVolume).execute();
+                new ChangeExposureDelayTask(getApplicationContext(), (processCode - SET_EXP_DELAY_OFF), speechVolume, languageIndex).execute();
                 break;
             case SET_CAP_MODE_IMAGE:
                 new ChangeCaptureModeTask(ChangeCaptureModeTask.CAPMODE_IMAGE).execute();
@@ -394,14 +408,17 @@ public class MainActivity extends PluginActivity {
                 if (speechVolume > SPEECH_VOLUME_MAX) {
                     speechVolume = SPEECH_VOLUME_MAX;
                 }
-                new SoundManagerTask(getApplicationContext(), R.raw.speech_volume, speechVolume).execute();
+                new SoundManagerTask(getApplicationContext(), soundListChgVolume[languageIndex], speechVolume).execute();
                 break;
             case SET_SPEECH_VOL_MINUS:
                 speechVolume -= SPEECH_VOLUME_STEP;
                 if (speechVolume < SPEECH_VOLUME_MIN) {
                     speechVolume = SPEECH_VOLUME_MIN;
                 }
-                new SoundManagerTask(getApplicationContext(), R.raw.speech_volume, speechVolume).execute();
+                new SoundManagerTask(getApplicationContext(), soundListChgVolume[languageIndex], speechVolume).execute();
+                break;
+            case TGGLE_LANGUAGE:
+                changeLanguage();
                 break;
         }
 
@@ -914,9 +931,17 @@ public class MainActivity extends PluginActivity {
         } else { // 70 to 100
             speechVolume = 0;     // Max to Off
         }
-        new SoundManagerTask(getApplicationContext(), R.raw.speech_volume , speechVolume).execute();
+        new SoundManagerTask(getApplicationContext(), soundListChgVolume[languageIndex], speechVolume).execute();
     }
 
+    private void changeLanguage() {
+        if ( languageIndex == SoundManagerTask.LANGUAGE_JP ) {
+            languageIndex = SoundManagerTask.LANGUAGE_EN;
+        } else {
+            languageIndex = SoundManagerTask.LANGUAGE_JP;
+        }
+        new SoundManagerTask(getApplicationContext(), soundListChgLang[languageIndex], speechVolume).execute();
+    }
 
 
 

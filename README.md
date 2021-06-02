@@ -1,13 +1,30 @@
 # HID remote control plug-in Sample for RICOH THETA
+
 This sample plug-in does control THETA with HID(Human Interface Device).<br>
 This project is based on [ricohapi/theta-plugin-sdk](https://github.com/ricohapi/theta-plugin-sdk).
 
 
+## Update V1.1.0
+
+- Bilingual support and improved sound quality:<br>
+The previous version only supported Japanese, but now it supports two languages, Japanese and English.
+In addition, the sound quality of synthetic voice has been improved.
+If you continue to use this plug-in from the previous version, assign the item "TGGLE_LANGUAGE" to one of the buttons, switch to your favorite language setting, and then return to the previous button assignment.
+
+- OLED display change when using THETA Z1:<br>
+Changed to display the plugin name while the plugin is running.
+
+- Support for Bluetooth HID:<br>
+If you upgrade the FW version and enable the remote control function with the pre-installed Remote Control plug-in before starting this plug-in, you can also use Buletooth HID devices.<br>
+https://www.thetalab.ricoh/plugin/remote-control/
+
+
 ## Usage
+
 With this THETA plug-in, HID (Human Interface Device) connected to the USB port can be treated as an expanded operation button.
 HID (Human Interface Device) has various tools including wired / wireless such as keyboard, mouse, game pad, finger presenter (slide control tool).
 
-Regardless of the presence or absence of a USB-connected external operation button, the action corresponding to the operation button can be selected and set from the following 27 types.
+Regardless of the presence or absence of a USB-connected external operation button, the action corresponding to the operation button can be selected and set from the following 28 types.
 This means that the role of the main unit control button can also be changed.
 
 
@@ -40,6 +57,11 @@ This means that the role of the main unit control button can also be changed.
 |24|SET_CAMERA_VOL_MINUS|Decrease the camera volume by one level(10/100).|-|chooseable|
 |25|SET_SPEECH_VOL_PLUS |Increase the camera volume by one level(20/100).|-|chooseable|
 |26|SET_SPEECH_VOL_MINUS|Decrease the camera volume by one level(20/100).|-|chooseable|
+|27|TGGLE_LANGUAGE|Toggle the utterance language (Japanese <-> English)|-|chooseable|
+
+
+
+
 
 There are "Simple View" and "Advanced View" on the setting screen (webUI). In "Simple View", you can not select No. 11 or later (displayed if it is selected).
 
@@ -99,34 +121,20 @@ Those who set the THETA V into developer mode, please check the operation while 
 |KEYCODE_SYSTEM_NAVIGATION_RIGHT  | onKeyDown and onKeyUp events do not occur |
 
 
-
-
 ## Development Environment
+
 ### Camera
-* RICOH THETA V Firmware ver.3.00.1 and above
-* RICOH THETA Z1 Firmware ver.1.03.5 and above
+* RICOH THETA V Firmware ver.3.50.1 and above
+* RICOH THETA Z1 Firmware ver.1.60.1 and above
 
 ### SDK/Library
-* RICOH THETA Plug-in SDK ver.1.0.1
+
+* [RICOH THETA Plug-in SDK ver.2.0.10](https://github.com/ricohapi/theta-plugin-sdk)
 
 ### Development Software
-* Android Studio ver.3.1
-* gradle ver.4.6
-* arduino IDE ver.1.8.5
 
-## About voice data licensing 
-The sound data used in this program is created at the following site.
-
-[https://note.cman.jp/other/voice/](https://note.cman.jp/other/voice/)
-
-For the sound created at the above site, the following license notation is necessary.
-
-[![Creative Commons Attribution (CC-BY) 3.0 license](http://mirrors.creativecommons.org/presskit/buttons/80x15/png/by.png)](https://creativecommons.org/licenses/by/3.0/deed.ja)
-
-HTS Voice "Mei(Normal)" Copyright (c) 2009-2013 Nagoya Institute of Technology
-
-For details of license data of audio data, please refer to [http://www.mmdagent.jp/](http://www.mmdagent.jp/).
-
+* Android Studio 4.0.1/4.1.1
+* gradle ver.5.1.1
 
 ## License
 
@@ -147,5 +155,6 @@ limitations under the License.
 ```
 
 ## Contact
+
 ![Contact](img/contact.png)
 
